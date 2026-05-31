@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>دعوة زفاف</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a84c;--gold-light:#e8d08a;--gold-dark:#9a7230;
+  --cream:#fdf8f0;--dark:#1a1208;--text:#3d2e0e;
+  --line:rgba(201,168,76,.3);--white:rgba(255,252,245,.92);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* BG */
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(201,168,76,.13),transparent),
+             radial-gradient(ellipse 60% 40% at 10% 80%,rgba(201,168,76,.08),transparent),
+             radial-gradient(ellipse 50% 50% at 90% 20%,rgba(201,168,76,.06),transparent);
+  pointer-events:none;z-index:0}
+
+/* floating petals */
+.petal{position:fixed;pointer-events:none;font-size:1rem;opacity:0;animation:fall linear infinite;z-index:0}
+@keyframes fall{
+  0%  {opacity:0;transform:translateY(-40px) rotate(0deg)}
+  10% {opacity:.6}
+  90% {opacity:.3}
+  100%{opacity:0;transform:translateY(100vh) rotate(360deg)}
+}
+
+.page{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+/* ORNAMENT */
+.ornament-top{text-align:center;margin-bottom:1.5rem;animation:fadeDown .9s ease both}
+.ornament-top svg{width:280px;opacity:.75}
+
+/* BISMILLAH */
+.bismillah{text-align:center;font-size:1.4rem;color:var(--gold-dark);letter-spacing:.08em;
+  margin-bottom:2rem;animation:fadeDown 1s .1s ease both;opacity:0}
+
+/* CARD */
+.card{border:1px solid var(--line);background:var(--white);backdrop-filter:blur(8px);
+  border-radius:4px;padding:3rem 2.5rem;position:relative;
+  box-shadow:0 4px 50px rgba(201,168,76,.12),inset 0 0 80px rgba(201,168,76,.04);
+  animation:fadeUp .9s .2s ease both;opacity:0;margin-bottom:2rem}
+.card::before,.card::after,.card .c-bl,.card .c-br{content:'';position:absolute;
+  width:40px;height:40px;border-color:var(--gold);border-style:solid}
+.card::before{top:12px;right:12px;border-width:1px 1px 0 0}
+.card::after {top:12px;left:12px; border-width:1px 0 0 1px}
+.card .c-bl  {bottom:12px;left:12px; border-width:0 0 1px 1px}
+.card .c-br  {bottom:12px;right:12px;border-width:0 1px 1px 0}
+
+/* HEADER */
+.invite-header{text-align:center;margin-bottom:2rem}
+.invite-label{font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem}
+.couple-names{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3.2rem);
+  font-weight:700;color:var(--dark);line-height:1.15;margin-bottom:.4rem}
+.couple-names .amp{font-style:italic;color:var(--gold);font-size:.75em;margin:0 .3em}
+.names-arabic{font-size:1.05rem;color:var(--gold-dark);margin-top:.3rem}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0;color:var(--gold)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.divider-icon{font-size:1rem;flex-shrink:0}
+
+/* ── COUNTDOWN ── */
+.countdown-section{text-align:center;margin-bottom:2rem}
+.countdown-label{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);display:block;margin-bottom:1rem}
+.countdown-grid{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.cd-box{background:rgba(201,168,76,.08);border:1px solid var(--line);
+  border-radius:4px;padding:.8rem 1.2rem;min-width:68px;text-align:center;
+  transition:transform .3s}
+.cd-box:hover{transform:translateY(-3px)}
+.cd-num{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;
+  color:var(--gold-dark);line-height:1;display:block}
+.cd-unit{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
+  color:#9a8050;margin-top:.3rem;display:block}
+.cd-finished{font-size:1.1rem;color:var(--gold-dark);font-weight:500;
+  padding:1rem;border:1px solid var(--line);border-radius:4px;display:none}
+
+/* ── DATE BADGE ── */
+.date-badge{display:flex;justify-content:center;align-items:center;gap:2rem;
+  margin-bottom:2rem;flex-wrap:wrap}
+.date-part{text-align:center}
+.date-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;
+  color:var(--gold-dark);line-height:1}
+.date-lbl{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-top:.2rem}
+.date-sep{color:var(--gold);font-size:2rem;opacity:.4;font-family:'Playfair Display',serif}
+
+/* DETAILS GRID */
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2rem;margin-bottom:2rem}
+.detail-item{text-align:center}
+.detail-label{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  display:block;margin-bottom:.3rem}
+.detail-value{font-size:1rem;font-weight:500;color:var(--dark);line-height:1.4}
+.detail-sub{font-size:.8rem;color:#8a7040;margin-top:.1rem}
+
+/* VENUE */
+.venue-box{text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:1.4rem 0;margin-bottom:2rem}
+.venue-name{font-size:1.2rem;font-weight:700;color:var(--dark)}
+.venue-address{font-size:.88rem;color:#8a7040;margin-top:.3rem}
+.map-link{display:inline-flex;align-items:center;gap:.4rem;margin-top:.8rem;
+  font-size:.82rem;color:var(--gold-dark);text-decoration:none;
+  border:1px solid var(--gold-dark);padding:.35rem .9rem;border-radius:2px;
+  transition:background .25s,color .25s}
+.map-link:hover{background:var(--gold-dark);color:#fff}
+
+/* MESSAGE */
+.personal-msg{text-align:center;font-size:.95rem;line-height:1.9;color:#5a4520;
+  margin-bottom:2rem;font-style:italic}
+
+/* ── QR ── */
+.qr-section{text-align:center;margin-bottom:2rem}
+.qr-title{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.qr-wrapper{display:inline-block;padding:14px;border:1px solid var(--line);
+  background:#fff;border-radius:3px}
+.qr-wrapper img{display:block;width:160px;height:160px}
+.entry-code-display{margin-top:.8rem;font-family:'Playfair Display',serif;
+  font-size:1.4rem;color:var(--gold-dark);letter-spacing:.15em}
+.qr-note{font-size:.78rem;color:#9a8050;margin-top:.5rem}
+
+/* ── VENUE GALLERY ── */
+.gallery-section{margin-bottom:2rem}
+.section-title{text-align:center;font-size:.72rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.venue-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;border-radius:4px;overflow:hidden}
+.venue-gallery img{width:100%;aspect-ratio:1;object-fit:cover;display:block;
+  transition:transform .4s,filter .4s;filter:brightness(.95) sepia(.1)}
+.venue-gallery img:hover{transform:scale(1.04);filter:brightness(1) sepia(0)}
+.gallery-placeholder{width:100%;aspect-ratio:1;background:rgba(201,168,76,.08);
+  border:1px dashed var(--line);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.4rem;cursor:pointer;
+  transition:background .25s;border-radius:2px}
+.gallery-placeholder:hover{background:rgba(201,168,76,.15)}
+.gallery-placeholder .ph-icon{font-size:1.6rem;color:var(--gold);opacity:.5}
+.gallery-placeholder .ph-text{font-size:.7rem;color:#9a8050;text-align:center;padding:0 .5rem}
+
+/* ── GUEST PHOTOS UPLOAD ── */
+.upload-section{border:1px solid var(--line);border-radius:4px;
+  padding:1.5rem;text-align:center;margin-bottom:2rem;
+  background:rgba(201,168,76,.04)}
+.upload-title{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.6rem}
+.upload-desc{font-size:.85rem;color:#7a6030;margin-bottom:1rem;line-height:1.6}
+.upload-btn{display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--gold-dark);color:#fff;border:none;padding:.65rem 1.4rem;
+  border-radius:2px;font-family:'Tajawal',sans-serif;font-size:.9rem;
+  cursor:pointer;transition:background .25s;letter-spacing:.03em}
+.upload-btn:hover{background:var(--gold)}
+.upload-input{display:none}
+.upload-preview{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;justify-content:center}
+.upload-preview img{width:80px;height:80px;object-fit:cover;border-radius:3px;
+  border:1px solid var(--line)}
+.upload-count{font-size:.78rem;color:#9a8050;margin-top:.5rem}
+.share-note{font-size:.75rem;color:#b09060;margin-top:.5rem;font-style:italic}
+
+/* ── EXTRA INFO ── */
+.extra-info{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+.info-card{border:1px solid var(--line);border-radius:4px;padding:1rem;text-align:center;
+  background:rgba(201,168,76,.04)}
+.info-icon{font-size:1.5rem;margin-bottom:.4rem}
+.info-title{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.info-text{font-size:.9rem;color:var(--dark);font-weight:500}
+.info-sub{font-size:.78rem;color:#8a7040;margin-top:.2rem}
+
+/* FOOTER */
+.invite-footer{text-align:center;font-size:.8rem;color:#b09060;letter-spacing:.05em;margin-top:.5rem}
+.ornament-bottom{text-align:center;margin-top:1.5rem}
+.ornament-bottom svg{width:140px;opacity:.5;transform:rotate(180deg)}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(20,12,4,.92);
+  z-index:999;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:85vh;object-fit:contain;border:1px solid var(--line)}
+.lightbox-close{position:absolute;top:1.2rem;left:1.5rem;color:var(--gold);
+  font-size:1.8rem;cursor:pointer;background:none;border:none;line-height:1}
+
+/* ANIMATIONS */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp  {from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:480px){
+  .card{padding:2rem 1.2rem}
+  .details-grid,.extra-info{grid-template-columns:1fr}
+  .venue-gallery{grid-template-columns:repeat(2,1fr)}
+  .countdown-grid{gap:.6rem}
+  .cd-box{min-width:58px;padding:.6rem .8rem}
+  .cd-num{font-size:1.8rem}
+  .date-badge{gap:1rem}
+  .date-num{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Petals -->
+<div class="petal" style="left:5%;animation-duration:12s;animation-delay:0s">🌸</div>
+<div class="petal" style="left:20%;animation-duration:15s;animation-delay:2s">🌹</div>
+<div class="petal" style="left:45%;animation-duration:11s;animation-delay:4s">✿</div>
+<div class="petal" style="left:70%;animation-duration:14s;animation-delay:1s">🌸</div>
+<div class="petal" style="left:88%;animation-duration:13s;animation-delay:3s">🌺</div>
+
+<div class="page">
+
+  <!-- Top ornament -->
+  <div class="ornament-top">
+    <svg viewBox="0 0 320 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="120" y2="30" stroke="#c9a84c" stroke-width=".8"/>
+      <path d="M120 30 Q140 8 160 30 Q180 52 200 30" stroke="#c9a84c" stroke-width="1.3" fill="none"/>
+      <line x1="200" y1="30" x2="320" y2="30" stroke="#c9a84c" stroke-width=".8"/>
+      <circle cx="160" cy="30" r="3.5" fill="#c9a84c"/>
+      <circle cx="120" cy="30" r="2" fill="#c9a84c" opacity=".6"/>
+      <circle cx="200" cy="30" r="2" fill="#c9a84c" opacity=".6"/>
+      <circle cx="70"  cy="30" r="1.5" fill="#c9a84c" opacity=".35"/>
+      <circle cx="250" cy="30" r="1.5" fill="#c9a84c" opacity=".35"/>
+    </svg>
+  </div>
+
+  <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+
+  <!-- ══ MAIN CARD ══ -->
+  <div class="card">
+    <span class="c-bl"></span><span class="c-br"></span>
+
+    <!-- Header -->
+    <div class="invite-header">
+      <p class="invite-label">Wedding Invitation · دعوة زفاف</p>
+      <h1 class="couple-names" id="names-en">Ahmed <span class="amp">&</span> Sara</h1>
+      <p class="names-arabic" id="names-ar">أحمد محمد &amp; سارة علي</p>
+    </div>
+
+    <div class="divider"><span class="divider-icon">✦</span></div>
+
+    <!-- Personal message -->
+    <p class="personal-msg" id="personal-message">
+      يسعدنا أن نتشرف بحضوركم الكريم<br>
+      لمشاركتنا فرحة زفافنا السعيد،<br>
+      فأهلاً وسهلاً بكم.
+    </p>
+
+    <!-- DATE BADGE -->
+    <div class="date-badge">
+      <div class="date-part">
+        <div class="date-num" id="date-day">20</div>
+        <div class="date-lbl">يوم · Day</div>
+      </div>
+      <div class="date-sep">/</div>
+      <div class="date-part">
+        <div class="date-num" id="date-month">06</div>
+        <div class="date-lbl">شهر · Month</div>
+      </div>
+      <div class="date-sep">/</div>
+      <div class="date-part">
+        <div class="date-num" id="date-year">2025</div>
+        <div class="date-lbl">سنة · Year</div>
+      </div>
+    </div>
+
+    <div class="divider"><span class="divider-icon">🕐</span></div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-section">
+      <span class="countdown-label">العد التنازلي · Countdown</span>
+      <div class="countdown-grid">
+        <div class="cd-box"><span class="cd-num" id="cd-days">00</span><span class="cd-unit">يوم</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-hours">00</span><span class="cd-unit">ساعة</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-mins">00</span><span class="cd-unit">دقيقة</span></div>
+        <div class="cd-box"><span class="cd-num" id="cd-secs">00</span><span class="cd-unit">ثانية</span></div>
+      </div>
+      <div class="cd-finished" id="cd-finished">🎉 حفل الزفاف الآن!</div>
+    </div>
+
+    <div class="divider"><span class="divider-icon">✦</span></div>
+
+    <!-- Details grid -->
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="detail-label">التاريخ · Date</span>
+        <div class="detail-value" id="event-date-ar">الجمعة ٢٠ يونيو ٢٠٢٥</div>
+        <div class="detail-sub" id="event-date-en">Friday, 20 June 2025</div>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">التوقيت · Time</span>
+        <div class="detail-value" id="event-time-ar">٨:٠٠ مساءً</div>
+        <div class="detail-sub" id="event-time-en">8:00 PM</div>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">كود الدخول · Code</span>
+        <div class="detail-value" id="entry-code" style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold-dark);letter-spacing:.12em">A-2025</div>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">الدريس كود · Dress</span>
+        <div class="detail-value" id="dress-code">Formal · رسمي</div>
+      </div>
+    </div>
+
+    <!-- Venue -->
+    <div class="venue-box">
+      <span class="detail-label">مكان الحفل · Venue</span>
+      <div class="venue-name" id="venue-name">قاعة النيل الكبرى</div>
+      <div class="venue-address" id="venue-address">كورنيش النيل، المعادي، القاهرة</div>
+      <a class="map-link" id="map-link" href="#" target="_blank">📍 اضغط لفتح الخريطة</a>
+    </div>
+
+    <!-- Extra info cards -->
+    <div class="extra-info">
+      <div class="info-card">
+        <div class="info-icon">🎵</div>
+        <div class="info-title">الموسيقى</div>
+        <div class="info-text" id="music-info">فرقة موسيقية حية</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🍽️</div>
+        <div class="info-title">العشاء</div>
+        <div class="info-text" id="dinner-info">بوفيه مفتوح</div>
+        <div class="info-sub" id="dinner-sub">من ٨ م حتى ١٢ م</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🚗</div>
+        <div class="info-title">باركينج</div>
+        <div class="info-text" id="parking-info">متاح مجاناً</div>
+        <div class="info-sub" id="parking-sub">أمام القاعة</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">📞</div>
+        <div class="info-title">تواصل</div>
+        <div class="info-text" id="contact-info">01012345678</div>
+        <div class="info-sub">للاستفسار</div>
+      </div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+      <p class="qr-title">باركود الدخول · Entry QR</p>
+      <div class="qr-wrapper">
+        <img id="qr-img" src="" alt="QR Code"/>
+      </div>
+      <div class="entry-code-display" id="qr-code-label">A-2025</div>
+      <p class="qr-note">أرِ هذا الباركود عند دخول القاعة</p>
+    </div>
+
+    <div class="invite-footer" id="invite-footer">نتطلع لمشاركتكم هذه اللحظات الجميلة 🌹</div>
+  </div>
+
+  <!-- ══ VENUE GALLERY ══ -->
+  <div class="card" id="venue-gallery-card">
+    <span class="c-bl"></span><span class="c-br"></span>
+    <div class="gallery-section">
+      <p class="section-title">صور القاعة · Venue Photos</p>
+      <div class="venue-gallery" id="venue-gallery">
+        <!-- يتم ملؤها من CONFIG -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GUEST PHOTO UPLOAD ══ -->
+  <div class="card">
+    <span class="c-bl"></span><span class="c-br"></span>
+    <div class="upload-section" style="border:none;padding:0">
+      <p class="upload-title">📸 صورك من الفرح · Share Your Moments</p>
+      <p class="upload-desc" id="upload-desc">
+        شاركنا لحظاتك الجميلة من الحفل!<br>
+        اختر صورك وشاركها معنا
+      </p>
+      <button class="upload-btn" onclick="document.getElementById('photo-input').click()">
+        📷 اختر صور
+      </button>
+      <input type="file" id="photo-input" class="upload-input" accept="image/*" multiple onchange="handlePhotos(this)">
+      <div class="upload-preview" id="upload-preview"></div>
+      <div class="upload-count" id="upload-count"></div>
+      <p class="share-note" id="share-note">* يمكنك مشاركة الصور عبر واتساب على الرقم: <span id="whatsapp-num">01012345678</span></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   ★  غير البيانات هنا فقط  ★
+   ═══════════════════════════════════════════════ */
+const CONFIG = {
+  // الأسماء
+  namesEN:      "Ahmed & Sara",
+  namesAR:      "أحمد محمد & سارة علي",
+
+  // التاريخ — مهم: الفورمات YYYY-MM-DDTHH:MM:SS للعد التنازلي
+  eventDateTime: "2025-06-20T20:00:00",
+  // للعرض فقط
+  dateDay:   "20",
+  dateMonth: "06",
+  dateYear:  "2025",
+  dateAR:    "الجمعة ٢٠ يونيو ٢٠٢٥",
+  dateEN:    "Friday, 20 June 2025",
+  timeAR:    "٨:٠٠ مساءً",
+  timeEN:    "8:00 PM",
+
+  // المكان
+  venueName:    "قاعة النيل الكبرى",
+  venueAddress: "كورنيش النيل، المعادي، القاهرة",
+  mapURL:       "https://maps.google.com/?q=29.9594,31.2553",
+
+  // تفاصيل إضافية
+  musicInfo:   "فرقة موسيقية حية",
+  dinnerInfo:  "بوفيه مفتوح",
+  dinnerSub:   "من ٨ م حتى ١٢ م",
+  parkingInfo: "متاح مجاناً",
+  parkingSub:  "أمام القاعة",
+  contactNum:  "01012345678",
+
+  // الدخول
+  entryCode:  "A-2025",
+  dressCode:  "Formal · رسمي",
+
+  // الرسالة
+  message: "يسعدنا أن نتشرف بحضوركم الكريم\nلمشاركتنا فرحة زفافنا السعيد،\nفأهلاً وسهلاً بكم.",
+  footerMsg: "نتطلع لمشاركتكم هذه اللحظات الجميلة 🌹",
+
+  // ── صور القاعة ──
+  // ضع روابط صور القاعة هنا (URLs)، أو اتركها فارغة [] وستظهر أماكن placeholder
+  venuePhotos: [
+    // "https://example.com/photo1.jpg",
+    // "https://example.com/photo2.jpg",
+    // "https://example.com/photo3.jpg",
+    // "https://example.com/photo4.jpg",
+    // "https://example.com/photo5.jpg",
+    // "https://example.com/photo6.jpg",
+  ],
+
+  // واتساب لاستلام صور المعازيم
+  whatsappNum: "01012345678",
+  uploadDesc:  "شاركنا لحظاتك الجميلة من الحفل!\nاختر صورك وشاركها معنا",
+};
+/* ═══════════════════════════════════════════════ */
+
+// ── Apply data ──
+document.getElementById('names-en').innerHTML =
+  CONFIG.namesEN.replace('&','<span class="amp">&amp;</span>');
+document.getElementById('names-ar').textContent      = CONFIG.namesAR;
+document.getElementById('date-day').textContent       = CONFIG.dateDay;
+document.getElementById('date-month').textContent     = CONFIG.dateMonth;
+document.getElementById('date-year').textContent      = CONFIG.dateYear;
+document.getElementById('event-date-ar').textContent  = CONFIG.dateAR;
+document.getElementById('event-date-en').textContent  = CONFIG.dateEN;
+document.getElementById('event-time-ar').textContent  = CONFIG.timeAR;
+document.getElementById('event-time-en').textContent  = CONFIG.timeEN;
+document.getElementById('entry-code').textContent     = CONFIG.entryCode;
+document.getElementById('qr-code-label').textContent  = CONFIG.entryCode;
+document.getElementById('dress-code').textContent     = CONFIG.dressCode;
+document.getElementById('venue-name').textContent     = CONFIG.venueName;
+document.getElementById('venue-address').textContent  = CONFIG.venueAddress;
+document.getElementById('map-link').href              = CONFIG.mapURL;
+document.getElementById('music-info').textContent     = CONFIG.musicInfo;
+document.getElementById('dinner-info').textContent    = CONFIG.dinnerInfo;
+document.getElementById('dinner-sub').textContent     = CONFIG.dinnerSub;
+document.getElementById('parking-info').textContent   = CONFIG.parkingInfo;
+document.getElementById('parking-sub').textContent    = CONFIG.parkingSub;
+document.getElementById('contact-info').textContent   = CONFIG.contactNum;
+document.getElementById('invite-footer').textContent  = CONFIG.footerMsg;
+document.getElementById('personal-message').innerHTML = CONFIG.message.replace(/\n/g,'<br>');
+document.getElementById('whatsapp-num').textContent   = CONFIG.whatsappNum;
+document.getElementById('upload-desc').innerHTML      = CONFIG.uploadDesc.replace(/\n/g,'<br>');
+document.title = 'دعوة زفاف - ' + CONFIG.namesAR;
+
+// ── QR Code ──
+const qrData = encodeURIComponent(
+  'WEDDING\n' + CONFIG.namesAR + '\nCode:' + CONFIG.entryCode + '\n' + CONFIG.dateEN
+);
+document.getElementById('qr-img').src =
+  'https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=3d2e0e&bgcolor=ffffff&data=' + qrData;
+
+// ── Venue Gallery ──
+const gallery = document.getElementById('venue-gallery');
+const PHOTO_COUNT = 6;
+if (CONFIG.venuePhotos.length === 0) {
+  for (let i = 0; i < PHOTO_COUNT; i++) {
+    gallery.innerHTML += `
+      <div class="gallery-placeholder">
+        <div class="ph-icon">🖼️</div>
+        <div class="ph-text">أضف صورة القاعة</div>
+      </div>`;
+  }
+} else {
+  CONFIG.venuePhotos.forEach((src,i) => {
+    gallery.innerHTML += `<img src="${src}" alt="صورة القاعة ${i+1}"
+      onclick="openLightbox('${src}')" style="cursor:zoom-in">`;
+  });
+}
+
+// ── Countdown ──
+function updateCountdown() {
+  const target = new Date(CONFIG.eventDateTime).getTime();
+  const now    = Date.now();
+  const diff   = target - now;
+
+  if (diff <= 0) {
+    document.querySelectorAll('.cd-box').forEach(b => b.style.display = 'none');
+    document.getElementById('cd-finished').style.display = 'block';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000)  / 60000);
+  const s = Math.floor((diff % 60000)    / 1000);
+  document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── Guest Photo Upload ──
+function handlePhotos(input) {
+  const files   = Array.from(input.files);
+  const preview = document.getElementById('upload-preview');
+  const count   = document.getElementById('upload-count');
+  preview.innerHTML = '';
+  files.forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.onclick = () => openLightbox(e.target.result);
+      img.style.cursor = 'zoom-in';
+      preview.appendChild(img);
+    };
+    r.readAsDataURL(f);
+  });
+  count.textContent = files.length > 0 ? `تم اختيار ${files.length} صورة` : '';
+}
+
+// ── Lightbox ──
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ── Falling petals ──
+document.querySelectorAll('.petal').forEach(p => {
+  p.style.animationDelay = (Math.random()*10) + 's';
+  p.style.animationDuration = (10 + Math.random()*8) + 's';
+});
+</script>
+</body>
+</html>
